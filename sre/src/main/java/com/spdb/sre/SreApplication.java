@@ -11,7 +11,6 @@ import com.spdb.sre.handler.ICreateHandler;
 import com.spdb.sre.model.WsRequestType;
 
 @SpringBootApplication
-@EnableAsync
 public class SreApplication {
 
 	public static void main(String[] args) {

@@ -12,23 +12,21 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
-import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
-import org.springframework.scheduling.annotation.Async;
-import org.springframework.stereotype.Service;
 import org.springframework.util.ResourceUtils;
 
-@Service
 public class ProcessInvoker {
 
+    private ExecutorService _executorService = Executors.newFixedThreadPool(10);
     private List<IPowershellEventListener> _listeners = new ArrayList<>();
     private Process _proc;
 
-    @Async
-    public CompletableFuture<Integer> ExecutePsMultiLineWithAgentModuleAsync(
+    public Runnable ExecutePsMultiLineWithAgentModuleAsync(
             String scripString,
             String workingDirectory,
-            Map<String, String> environment) throws IOException, InterruptedException {
+            Map<String, String> environment) throws IOException {
 
         if (workingDirectory == null || workingDirectory.isEmpty()) {
             workingDirectory = System.getProperty("user.dir");
@@ -53,11 +51,10 @@ public class ProcessInvoker {
         return result;
     }
 
-    @Async
-    public CompletableFuture<Integer> ExecutePsWithAgentModuleAsync(
+    public Runnable ExecutePsWithAgentModuleAsync(
             String filePath,
             String workingDirectory,
-            Map<String, String> environment) throws IOException, InterruptedException {
+            Map<String, String> environment) throws IOException {
 
         List<String> command = new ArrayList<>();
         command.add("Import-Module " + getStaticFilePath("\\powershell\\SreCommon.psm1"));
@@ -69,11 +66,10 @@ public class ProcessInvoker {
                 environment);
     }
 
-    @Async
-    public CompletableFuture<Integer> ExecutePsFileAsync(
+    public Runnable ExecutePsFileAsync(
             String filePath,
             String workingDirectory,
-            Map<String, String> environment) throws IOException, InterruptedException {
+            Map<String, String> environment) {
 
         return ExecuteAsync(
                 List.of("powershell.exe", "-ExecutionPolicy", "Bypass", "-File", filePath),
@@ -81,11 +77,10 @@ public class ProcessInvoker {
                 environment);
     }
 
-    @Async
-    public CompletableFuture<Integer> ExecutePsCommandAsync(
+    public Runnable ExecutePsCommandAsync(
             String command,
             String workingDirectory,
-            Map<String, String> environment) throws IOException, InterruptedException {
+            Map<String, String> environment) {
 
         return ExecuteAsync(
                 List.of("powershell.exe", "-Command", command),
@@ -93,8 +88,28 @@ public class ProcessInvoker {
                 environment);
     }
 
-    @Async
-    public CompletableFuture<Integer> ExecuteAsync(
+    public Runnable ExecuteAsync(
+            List<String> command,
+            String workingDirectory,
+            Map<String, String> environment) {
+
+        var task = new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    Execute(command, workingDirectory, environment);
+                } catch (IOException | InterruptedException e) {
+                    e.printStackTrace();
+                }
+            }
+        };
+
+        // 在线程池中启动一个新线程
+        _executorService.execute(task);
+        return task;
+    }
+
+    private void Execute(
             List<String> command,
             String workingDirectory,
             Map<String, String> environment) throws IOException, InterruptedException {
@@ -147,9 +162,8 @@ public class ProcessInvoker {
             }
         }
 
-        var result = _proc.waitFor();
-
-        return CompletableFuture.completedFuture(result);
+        var exitCode = _proc.waitFor();
+        publishCompletedEvent(exitCode);
     }
 
     public boolean Cancellation() {
@@ -178,6 +192,12 @@ public class ProcessInvoker {
     private void publishReturnDataEvent(String data) {
         for (IPowershellEventListener listener : _listeners) {
             listener.handleReturnData(data);
+        }
+    }
+
+    private void publishCompletedEvent(int exitCode) {
+        for (IPowershellEventListener listener : _listeners) {
+            listener.handleCompleted(exitCode);
         }
     }
 

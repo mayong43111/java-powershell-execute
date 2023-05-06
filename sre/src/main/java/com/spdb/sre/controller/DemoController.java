@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.spdb.sre.model.PowerResponse;
-import com.spdb.sre.powershell.IPowershellEventListener;
+import com.spdb.sre.powershell.AbstractPowershellEventListener;
 import com.spdb.sre.powershell.ProcessInvoker;
 
 @Controller
@@ -25,15 +25,11 @@ public class DemoController {
         ProcessInvoker processInvoker = new ProcessInvoker();
         StringBuilder result = new StringBuilder();
 
-        processInvoker.addListener(new IPowershellEventListener() {
+        processInvoker.addListener(new AbstractPowershellEventListener() {
 
             @Override
             public void handleOutputLine(String stdout) {
                 result.append(stdout + "\r\n");
-            }
-
-            @Override
-            public void handleReturnData(String data) {
             }
         });
 
@@ -52,7 +48,7 @@ public class DemoController {
         StringBuilder result = new StringBuilder();
         StringBuilder returnData = new StringBuilder();
 
-        processInvoker.addListener(new IPowershellEventListener() {
+        processInvoker.addListener(new AbstractPowershellEventListener() {
 
             @Override
             public void handleOutputLine(String stdout) {
@@ -66,13 +62,13 @@ public class DemoController {
             }
         });
 
-        var task = processInvoker.ExecutePsMultiLineWithAgentModuleAsync(command, null, null);
+        processInvoker.ExecutePsMultiLineWithAgentModuleAsync(command, null, null);
 
         return new PowerResponse() {
             {
                 stdout = result.toString();
                 data = returnData.toString();
-                exitCode = task.get();
+                exitCode = 0;
             }
         };
     }

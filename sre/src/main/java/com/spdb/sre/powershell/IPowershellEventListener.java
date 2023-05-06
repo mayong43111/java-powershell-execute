@@ -5,4 +5,6 @@ public interface IPowershellEventListener {
     void handleOutputLine(String stdout);
 
     void handleReturnData(String data);
+
+    void handleCompleted(int exitCode);
 }
