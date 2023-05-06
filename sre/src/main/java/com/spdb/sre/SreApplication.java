@@ -2,7 +2,6 @@ package com.spdb.sre;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.scheduling.annotation.EnableAsync;
 
 import com.spdb.sre.handler.CommandHandlerFactory;
 import com.spdb.sre.handler.ExecutePowershellHandler;
