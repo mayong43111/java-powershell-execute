@@ -1,0 +1,14 @@
+{
+    "configurations": [
+        {
+            "type": "java",
+            "name": "Spring Boot-SreApplication<sre>",
+            "request": "launch",
+            "cwd": "${workspaceFolder}",
+            "mainClass": "com.spdb.sre.SreApplication",
+            "projectName": "sre",
+            "args": "",
+            "envFile": "${workspaceFolder}/.env"
+        }
+    ]
+}
