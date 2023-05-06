@@ -1,10 +1,10 @@
 package com.spdb.sre.model;
 
-public class WsRequest {
+public class WsResponse {
 
     public String requestId;
 
-    public WsRequestType requestType;
+    public WsResponseType responseType;
 
     public String data;
 }

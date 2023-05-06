@@ -10,9 +10,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import com.spdb.sre.model.PowerResponse;
-import com.spdb.sre.powershell.AbstractPowershellEventListener;
-import com.spdb.sre.powershell.ProcessInvoker;
+import com.spdb.sre.powershell.PowershellExecutor;
 
 @Controller
 public class DemoController {
@@ -22,54 +20,15 @@ public class DemoController {
     @ResponseBody
     public String execute(@RequestBody String command) throws IOException, InterruptedException {
 
-        ProcessInvoker processInvoker = new ProcessInvoker();
-        StringBuilder result = new StringBuilder();
-
-        processInvoker.addListener(new AbstractPowershellEventListener() {
-
-            @Override
-            public void handleOutputLine(String stdout) {
-                result.append(stdout + "\r\n");
-            }
-        });
-
-        processInvoker.ExecutePsCommandAsync(command, null, null);
-
-        return result.toString();
+        return PowershellExecutor.execute(command, false);
     }
 
     @PostMapping("/api/executeMultiLine")
     @CrossOrigin
     @ResponseBody
-    public PowerResponse executeMultiLine(@RequestBody String command, @RequestParam String params)
+    public String executeMultiLine(@RequestBody String command, @RequestParam String params)
             throws IOException, InterruptedException, ExecutionException {
 
-        ProcessInvoker processInvoker = new ProcessInvoker();
-        StringBuilder result = new StringBuilder();
-        StringBuilder returnData = new StringBuilder();
-
-        processInvoker.addListener(new AbstractPowershellEventListener() {
-
-            @Override
-            public void handleOutputLine(String stdout) {
-                result.append(stdout + "\r\n");
-            }
-
-            @Override
-            public void handleReturnData(String data) {
-                returnData.setLength(0);
-                returnData.append(data);
-            }
-        });
-
-        processInvoker.ExecutePsMultiLineWithAgentModuleAsync(command, null, null);
-
-        return new PowerResponse() {
-            {
-                stdout = result.toString();
-                data = returnData.toString();
-                exitCode = 0;
-            }
-        };
+        return PowershellExecutor.execute(command, true);
     }
 }
