@@ -16,7 +16,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.spdb.sre.model.PowerStdoutResponse;
-import com.spdb.sre.powershell.PowershellExecutor;
+import com.spdb.sre.powershell.TaskExecutor;
 
 @Controller
 public class DemoController {
@@ -26,7 +26,7 @@ public class DemoController {
     @ResponseBody
     public String execute(@RequestBody String command) throws IOException, InterruptedException {
 
-        return PowershellExecutor.execute(command, false);
+        return TaskExecutor.execute(command, false);
     }
 
     @PostMapping("/api/executeMultiLine")
@@ -35,7 +35,7 @@ public class DemoController {
     public String executeMultiLine(@RequestBody String command, @RequestParam String params)
             throws IOException, InterruptedException, ExecutionException {
 
-        return PowershellExecutor.execute(command, true);
+        return TaskExecutor.execute(command, true);
     }
 
     @GetMapping("api/getStdout")

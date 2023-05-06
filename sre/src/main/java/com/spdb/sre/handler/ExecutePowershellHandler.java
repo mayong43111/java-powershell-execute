@@ -5,7 +5,7 @@ import org.springframework.web.socket.TextMessage;
 import org.springframework.web.socket.WebSocketSession;
 
 import com.spdb.sre.model.WsRequest;
-import com.spdb.sre.powershell.PowershellExecutor;
+import com.spdb.sre.powershell.TaskExecutor;
 
 public class ExecutePowershellHandler implements ICommandHandler {
 
@@ -13,7 +13,7 @@ public class ExecutePowershellHandler implements ICommandHandler {
     public void execute(WebSocketSession session, WsRequest request) {
 
         try {
-            PowershellExecutor.execute(request.data, true);
+            TaskExecutor.execute(request.data, true);
         } catch (IOException e) {
             e.printStackTrace();
         }

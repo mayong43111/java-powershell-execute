@@ -10,7 +10,7 @@ import com.spdb.sre.handler.WebNotificationBus;
 import com.spdb.sre.model.PowerResponse;
 import com.spdb.sre.model.WsResponseType;
 
-public class PowershellExecutor {
+public class TaskExecutor {
 
     public static String execute(String command, boolean multiLine) throws IOException {
 
