@@ -40,8 +40,8 @@ public class PowershellExecutor {
             @Override
             public void handleOutputLine(String stdout) {
                 try {
-
                     writer.append(stdout + "\r\n");
+                    writer.flush();
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
@@ -56,6 +56,8 @@ public class PowershellExecutor {
             @Override
             public void handleCompleted(int code) {
                 try {
+                    // 因为没有数据库，所以这里往文件里写入一个结束标识位代替数据库的状态位
+                    writer.append(">>>###end###<<<");
                     writer.close();
 
                     // TODO: 通知完成，这里通应该做过滤，通知哪些人

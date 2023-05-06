@@ -1,0 +1,10 @@
+
+SettingID Name                ScreenSaverActive ScreenSaverSecure ScreenSaverTimeout
+--------- ----                ----------------- ----------------- ------------------
+          FAREAST\yongma      False                                                 
+          NT AUTHORITY\SYSTEM False                                                 
+          .DEFAULT            False                                                 
+DESKTOP-29RSOPM
+
+
+>>>###end###<<<

@@ -1,0 +1,18 @@
+
+SettingID Name                ScreenSaverActive ScreenSaverSecure ScreenSaverTimeout
+--------- ----                ----------------- ----------------- ------------------
+          FAREAST\yongma      False                                                 
+          NT AUTHORITY\SYSTEM False                                                 
+          .DEFAULT            False                                                 
+You cannot call a method on a null-valued expression.
+At E:\repos\SPDB\spring_mvc\sre\logs\c2fb3060-e5c3-42de-b6fb-300964583313\1489229d-7cde-48ad-9166-0c4046a89010.ps1:3 ch
+ar:1
++ echo $agent.GetInputs()
++ ~~~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : InvalidOperation: (:) [], RuntimeException
+    + FullyQualifiedErrorId : InvokeMethodOnNull
+ 
+DESKTOP-29RSOPM
+
+
+>>>###end###<<<

@@ -46,7 +46,13 @@ public class ProcessInvoker {
                 workingDirectory,
                 environment);
 
-        file.delete();
+        this.addListener(new AbstractPowershellEventListener() {
+
+            @Override
+            public void handleCompleted(int code) {
+                file.delete();
+            }
+        });
 
         return result;
     }
