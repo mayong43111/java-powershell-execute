@@ -68,17 +68,17 @@ public class DemoController {
             // 读取指定开始行及其之后的所有行
             while ((line = br.readLine()) != null) {
 
-                lineNumber++;
-
                 if (line.startsWith(">>>###end###<<<")) {
                     completed = true;
                     break;
                 }
 
                 if (lineNumber < currentLine) {
+                    lineNumber++;
                     continue;
                 }
 
+                lineNumber++;
                 lines.append(line + "\r\n");
             }
 
